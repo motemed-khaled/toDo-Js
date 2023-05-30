@@ -14,6 +14,117 @@ let closeButton = document.querySelector(".container .todo .update-overlay .upda
 let select = document.querySelector(".todo .filter .form-select");
 let deleteAllButon = document.querySelector(".todo .filter .delete-all");
 
+
+
+// start function ========================================================
+
+const displayAll = function (allTasks) {
+    if (window.localStorage.getItem("tasks")) {
+        for (let i = 0; i < allTasks.length; i++) {
+            // create row in table
+            let tableRow = document.createElement("tr");
+            let taskId = document.createElement("td");
+            let taskName = document.createElement("td");
+            let taskOwner = document.createElement("td");
+            let taskPriority = document.createElement("td");
+            let taskAction = document.createElement("td");
+            let editButton = document.createElement("button");
+            let deleteButton = document.createElement("button");
+            let image = document.createElement("img");
+            let span = document.createElement("span");
+    
+            // add text to table data 
+            let taskIdText = document.createTextNode(i + 1);
+            let taskNameText = document.createTextNode(allTasks[i].name);
+            let spanText = document.createTextNode(allTasks[i].owner);
+            let taskPriorityText = document.createTextNode(allTasks[i].priority);
+            let editButtonText = document.createTextNode("Edit");
+            let deleteButtonText = document.createTextNode("Delete");
+    
+            // append text to table data (td)
+            taskId.appendChild(taskIdText);
+            taskName.appendChild(taskNameText);
+            span.appendChild(spanText);
+            taskPriority.appendChild(taskPriorityText);
+            editButton.appendChild(editButtonText);
+            deleteButton.appendChild(deleteButtonText);
+    
+            // add classes and attributes to my element
+            image.setAttribute("src", "image/1.jpg");
+            image.classList.add("img-fluid", "rounded-circle");
+            editButton.classList.add("btn", "edit", "btn-primary");
+            deleteButton.classList.add("btn", "delete", "ms-3", "btn-danger");
+    
+            // append element to taskowner
+            taskOwner.appendChild(image);
+            taskOwner.appendChild(span)
+    
+            // append button to task action
+            taskAction.appendChild(editButton);
+            taskAction.appendChild(deleteButton);
+    
+            // append table data (td) to table row (tr)
+            tableRow.appendChild(taskId);
+            tableRow.appendChild(taskName);
+            tableRow.appendChild(taskOwner);
+            tableRow.appendChild(taskPriority);
+            tableRow.appendChild(taskAction);
+    
+            //append table row to table body
+            tableBody.appendChild(tableRow);
+        }
+    }
+} 
+
+const sorting= function (allTasks) {
+    let priorityTwo = [];
+    let priorityThree = [];
+    let priorityOne = [];
+    allTasks.forEach(task => {
+        if (task.priority === 2) {
+            priorityTwo.push(task);
+        }else if (task.priority === 3) {
+            priorityThree.push(task);
+        }else if (task.priority === 1) {
+            priorityOne.push(task);
+        }
+    })
+    allTasks = [...priorityOne, ...priorityTwo, ...priorityThree];
+    updateId(allTasks);
+}
+
+const updateId = function (allTasks) {
+    let id = 1;
+    allTasks.forEach(task => {
+        task.id = id;
+        id++;
+    });
+    removeTasks();
+    localStorage.setItem("tasks", JSON.stringify(allTasks));
+    displayAll(allTasks);
+}
+
+
+const removeTasks =function () {
+    let allTr = document.querySelectorAll(".todo .todo-table .table-body tr");
+    allTr.forEach(child => {
+        child.remove()
+    });
+}
+
+const validate = function (inputValue , button , alert ) {
+    var patternRegex = /^[1-3]$/;
+    if (!patternRegex.test(inputValue)) {
+        button.setAttribute("disabled", "disabled");
+        alert.classList.remove("d-none");
+    } else {
+        alert.classList.add("d-none");
+        button.removeAttribute("disabled");
+    }
+}
+
+
+
 // show all old tasks from local storage
 let allTasks = JSON.parse(window.localStorage.getItem("tasks"));
 sorting(allTasks);
@@ -179,114 +290,4 @@ updatepriority.addEventListener("keyup", () => {
 });
 
 
-// start function ========================================================
 
-// start function to display tas;s;
-function displayAll(allTasks) {
-    if (window.localStorage.getItem("tasks")) {
-        for (let i = 0; i < allTasks.length; i++) {
-            // create row in table
-            let tableRow = document.createElement("tr");
-            let taskId = document.createElement("td");
-            let taskName = document.createElement("td");
-            let taskOwner = document.createElement("td");
-            let taskPriority = document.createElement("td");
-            let taskAction = document.createElement("td");
-            let editButton = document.createElement("button");
-            let deleteButton = document.createElement("button");
-            let image = document.createElement("img");
-            let span = document.createElement("span");
-    
-            // add text to table data 
-            let taskIdText = document.createTextNode(i + 1);
-            let taskNameText = document.createTextNode(allTasks[i].name);
-            let spanText = document.createTextNode(allTasks[i].owner);
-            let taskPriorityText = document.createTextNode(allTasks[i].priority);
-            let editButtonText = document.createTextNode("Edit");
-            let deleteButtonText = document.createTextNode("Delete");
-    
-            // append text to table data (td)
-            taskId.appendChild(taskIdText);
-            taskName.appendChild(taskNameText);
-            span.appendChild(spanText);
-            taskPriority.appendChild(taskPriorityText);
-            editButton.appendChild(editButtonText);
-            deleteButton.appendChild(deleteButtonText);
-    
-            // add classes and attributes to my element
-            image.setAttribute("src", "image/1.jpg");
-            image.classList.add("img-fluid", "rounded-circle");
-            editButton.classList.add("btn", "edit", "btn-primary");
-            deleteButton.classList.add("btn", "delete", "ms-3", "btn-danger");
-    
-            // append element to taskowner
-            taskOwner.appendChild(image);
-            taskOwner.appendChild(span)
-    
-            // append button to task action
-            taskAction.appendChild(editButton);
-            taskAction.appendChild(deleteButton);
-    
-            // append table data (td) to table row (tr)
-            tableRow.appendChild(taskId);
-            tableRow.appendChild(taskName);
-            tableRow.appendChild(taskOwner);
-            tableRow.appendChild(taskPriority);
-            tableRow.appendChild(taskAction);
-    
-            //append table row to table body
-            tableBody.appendChild(tableRow);
-        }
-    }
-} 
-
-// function to sort array
-function sorting(allTasks) {
-    let priorityTwo = [];
-    let priorityThree = [];
-    let priorityOne = [];
-    allTasks.forEach(task => {
-        if (task.priority === 2) {
-            priorityTwo.push(task);
-        }else if (task.priority === 3) {
-            priorityThree.push(task);
-        }else if (task.priority === 1) {
-            priorityOne.push(task);
-        }
-    })
-    allTasks = [...priorityOne, ...priorityTwo, ...priorityThree];
-    updateId(allTasks);
-}
-
-
-function updateId(allTasks) {
-    let id = 1;
-    allTasks.forEach(task => {
-        task.id = id;
-        id++;
-    });
-    removeTasks();
-    localStorage.setItem("tasks", JSON.stringify(allTasks));
-    displayAll(allTasks);
-}
-
-// remove all tasks to update any where
-
-function removeTasks() {
-    let allTr = document.querySelectorAll(".todo .todo-table .table-body tr");
-    allTr.forEach(child => {
-        child.remove()
-    });
-}
-
-// to validate priority
-function validate(inputValue , button , alert ) {
-    var patternRegex = /^[1-3]$/;
-    if (!patternRegex.test(inputValue)) {
-        button.setAttribute("disabled", "disabled");
-        alert.classList.remove("d-none");
-    } else {
-        alert.classList.add("d-none");
-        button.removeAttribute("disabled");
-    }
-}
