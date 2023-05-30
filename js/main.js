@@ -1,5 +1,7 @@
 // variable need to achieve the task
 let tableBody = document.querySelector(".todo .todo-table .table-body");
+let mainAlert = document.querySelector(".todo .input .alert");
+let updateAlert = document.querySelector(".container .todo .update-overlay .update .alert");
 let addButton = document.querySelector(".todo .input .add");
 let nameInput = document.querySelector(".todo .input .task-name");
 let priorityInput = document.querySelector(".todo .input .taskPriority");
@@ -12,10 +14,9 @@ let closeButton = document.querySelector(".container .todo .update-overlay .upda
 let select = document.querySelector(".todo .filter .form-select");
 let deleteAllButon = document.querySelector(".todo .filter .delete-all");
 
-
 // show all old tasks from local storage
 let allTasks = JSON.parse(window.localStorage.getItem("tasks"));
-displayAll(allTasks);
+sorting(allTasks);
 
 // add new task
 addButton.addEventListener("click", () => {
@@ -23,22 +24,15 @@ addButton.addEventListener("click", () => {
     let taskName = nameInput.value;
     let taskPriority = priorityInput.value;
     taskPriority = Math.floor(taskPriority);
-    
 
     // valid input
-    if (taskName === "" || taskPriority === 0) {
+    if (taskName === "") {
         Swal.fire({
             icon: 'error',
             title: 'Opps',
-            text: ` Please Write Task Name And Priority !`
+            text: ` Please Write Task Name !`
         })
     } else {
-        // vaild priority
-        if (taskPriority > 3) {
-            taskPriority = 3;
-        } else if (taskPriority <= 0) {
-            taskPriority = 1;
-        } 
         // check local storage
         if (window.localStorage.getItem("tasks") === null) {
             window.localStorage.setItem("tasks", "[]");
@@ -63,14 +57,14 @@ addButton.addEventListener("click", () => {
             }
             oldTasks.push(newValue);
             localStorage.setItem("tasks", JSON.stringify(oldTasks));
-            display(newValue.name, newValue.priority, newValue.id, newValue.owner);
+            sorting(oldTasks)
             nameInput.value = "";
             priorityInput.value = "";
         }
     }
 });
 
-// start delete action 
+//  delete action 
 document.addEventListener("click", e => {
     if (e.target.classList.contains("delete")) {
 
@@ -93,7 +87,7 @@ document.addEventListener("click", e => {
     }
 });
 
-// start update action 
+//  update action 
 document.addEventListener("click", e => {
     if (e.target.classList.contains("edit")) {
         overLay.style.display = "flex"
@@ -118,15 +112,9 @@ document.addEventListener("click", e => {
                 Swal.fire({
                     icon: 'error',
                     title: 'Opps',
-                    text: ` Please Write Task Name And Priority !`
+                    text: ` Please Write Task Name !`
                 });
             } else {
-            // vaild priority
-            if (newPriority > 3) {
-                newPriority = 3;
-            } else if (newPriority <= 0) {
-                newPriority = 1;
-            }
                 allTasks.forEach(task => {
                     if (task.id === taskId) {
                         task.name = updateName.value;
@@ -168,76 +156,32 @@ select.addEventListener("change", e => {
     }
 });
 
-// start delete all 
+//  delete all 
 deleteAllButon.addEventListener("click", () => {
     if (confirm("Are You Sure To Delete All Tasks !")) {
-    let allTasks = JSON.parse(window.localStorage.getItem("tasks"));
-    allTasks = [];
-    localStorage.setItem("tasks", JSON.stringify(allTasks));
-    removeTasks();
+        let allTasks = JSON.parse(window.localStorage.getItem("tasks"));
+        allTasks = [];
+        localStorage.setItem("tasks", JSON.stringify(allTasks));
+        removeTasks();
     }
-})
+});
 
+// valid priority input
+priorityInput.addEventListener("keyup", () => {
+    var priorityValue = priorityInput.value;
+    validate(priorityValue , addButton , mainAlert);
+});
+
+// valid update priority input
+updatepriority.addEventListener("keyup", () => {
+    var priorityValue = updatepriority.value;
+    validate(priorityValue , updateButton , updateAlert);
+});
 
 
 // start function ========================================================
 
-// start function to display the new task add 
-function display(name, priority , id , owner) {
-            // create row in table
-            let tableRow = document.createElement("tr");
-            let taskId = document.createElement("td");
-            let taskName = document.createElement("td");
-            let taskOwner = document.createElement("td");
-            let taskPriority = document.createElement("td");
-            let taskAction = document.createElement("td");
-            let editButton = document.createElement("button");
-            let deleteButton = document.createElement("button");
-            let image = document.createElement("img");
-            let span = document.createElement("span");
-    
-            // add text to table data 
-            let taskIdText = document.createTextNode(id);
-            let taskNameText = document.createTextNode(name);
-            let spanText = document.createTextNode(owner);
-            let taskPriorityText = document.createTextNode(priority);
-            let editButtonText = document.createTextNode("Edit");
-            let deleteButtonText = document.createTextNode("Delete");
-    
-            // append text to table data (td)
-            taskId.appendChild(taskIdText);
-            taskName.appendChild(taskNameText);
-            span.appendChild(spanText);
-            taskPriority.appendChild(taskPriorityText);
-            editButton.appendChild(editButtonText);
-            deleteButton.appendChild(deleteButtonText);
-    
-            // add classes and attributes to my element
-            image.setAttribute("src", "image/1.jpg");
-            image.classList.add("img-fluid", "rounded-circle");
-            editButton.classList.add("btn", "edit", "btn-primary");
-            deleteButton.classList.add("btn", "delete", "ms-3", "btn-danger");
-    
-            // append element to taskowner
-            taskOwner.appendChild(image);
-            taskOwner.appendChild(span)
-    
-            // append button to task action
-            taskAction.appendChild(editButton);
-            taskAction.appendChild(deleteButton);
-    
-            // append table data (td) to table row (tr)
-            tableRow.appendChild(taskId);
-            tableRow.appendChild(taskName);
-            tableRow.appendChild(taskOwner);
-            tableRow.appendChild(taskPriority);
-            tableRow.appendChild(taskAction);
-    
-            //append table row to table body
-            tableBody.appendChild(tableRow);
-}
-
-// start function to display all tas;
+// start function to display tas;s;
 function displayAll(allTasks) {
     if (window.localStorage.getItem("tasks")) {
         for (let i = 0; i < allTasks.length; i++) {
@@ -296,7 +240,24 @@ function displayAll(allTasks) {
     }
 } 
 
-// update id number when delete post
+// function to sort array
+function sorting(allTasks) {
+    let priorityTwo = [];
+    let priorityThree = [];
+    let priorityOne = [];
+    allTasks.forEach(task => {
+        if (task.priority === 2) {
+            priorityTwo.push(task);
+        }else if (task.priority === 3) {
+            priorityThree.push(task);
+        }else if (task.priority === 1) {
+            priorityOne.push(task);
+        }
+    })
+    allTasks = [...priorityOne, ...priorityTwo, ...priorityThree];
+    updateId(allTasks);
+}
+
 
 function updateId(allTasks) {
     let id = 1;
@@ -316,4 +277,16 @@ function removeTasks() {
     allTr.forEach(child => {
         child.remove()
     });
+}
+
+// to validate priority
+function validate(inputValue , button , alert ) {
+    var patternRegex = /^[1-3]$/;
+    if (!patternRegex.test(inputValue)) {
+        button.setAttribute("disabled", "disabled");
+        alert.classList.remove("d-none");
+    } else {
+        alert.classList.add("d-none");
+        button.removeAttribute("disabled");
+    }
 }

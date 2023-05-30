@@ -23,7 +23,10 @@
               </div>
               <div class="box">
                 <label for="prio">Task Priority :</label>
-                <input type="number" name="prio" id="prio">
+                <input type="text" name="prio" id="prio">
+                <div  class="alert alert-primary d-none" role="alert"> 
+                  <p>Task priority should be from 1 to 3</p> 
+                </div>
               </div>
               <div class="box">
                 <label for="owner">Owner Name :</label>
@@ -36,9 +39,14 @@
             </div>
           </div>
             <div class="input">
-                    <input class="task-name" type="text" name="taskName" placeholder="Write Task Name">
-                    <input class="taskPriority" type="number" name="taskPriority" placeholder="Write Priority">
-                    <button class="btn add btn-success">Add</button>
+                    <div class="task-input"><input class="task-name" type="text" name="taskName" placeholder="Write Task Name"></div>
+                    <div class="task-input">
+                      <input class="taskPriority" type="number" name="taskPriority" placeholder="Write Priority">
+                      <div  class="alert alert-primary d-none" role="alert"> 
+                        <p>Task priority should be from 1 to 3</p> 
+                      </div>
+                    </div>
+                    <div class="mt-1"><button class="btn add btn-success">Add</button></div>
             </div>
             <div class="filter">
               <div>

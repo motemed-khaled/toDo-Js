@@ -50,6 +50,18 @@ body{
 .container .todo .update-overlay .update .box{
     margin-bottom: 20px;
 }
+.container .todo .update-overlay .update .alert{
+    width: 50%;
+    padding: 10px 10px 2px;
+    margin: 5px auto 0;
+    white-space: nowrap;
+    border: none;
+    border-radius: 15px;
+    -webkit-border-radius: 15px;
+    -moz-border-radius: 15px;
+    -ms-border-radius: 15px;
+    -o-border-radius: 15px;
+}
 .container .todo .update-overlay .update .box input{
     padding: 10px 15px;
     width: 60%;
@@ -72,8 +84,11 @@ body{
     justify-content: space-around;
     margin-bottom: 50px;
 }
-.container .todo .input input{
+.container .todo .input .task-input {
     width: 40%;
+}
+.container .todo .input .task-input input{
+    width: 100%;
     border: 2px solid var(--main-color);
     padding: 10px 20px;
     outline: none;
@@ -102,6 +117,17 @@ body{
 }
 .container .todo .input input:focus::placeholder{
     opacity: 0;
+}
+.container .todo .input .alert{
+    padding: 10px 10px 2px;
+    margin: 5px 0 0;
+    white-space: nowrap;
+    border: none;
+    border-radius: 15px;
+    -webkit-border-radius: 15px;
+    -moz-border-radius: 15px;
+    -ms-border-radius: 15px;
+    -o-border-radius: 15px;
 }
 .container .todo .filter{
     display: flex;
