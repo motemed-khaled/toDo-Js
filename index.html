@@ -42,11 +42,17 @@
                     <div class="task-input"><input class="task-name" type="text" name="taskName" placeholder="Write Task Name"></div>
                     <div class="task-input">
                       <input class="taskPriority" type="number" name="taskPriority" placeholder="Write Priority">
-                      <div  class="alert alert-primary d-none" role="alert"> 
+                      <div  class="alert priority alert-primary d-none" role="alert"> 
                         <p>Task priority should be from 1 to 3</p> 
                       </div>
                     </div>
-                    <div class="mt-1"><button class="btn add btn-success">Add</button></div>
+                    <div class="task-input">
+                      <input class="taskTimer" type="date" name="taskTimer" placeholder="Write Priority">
+                      <div  class="alert date alert-primary d-none " role="alert"> 
+                        <p>Invalid Date</p> 
+                      </div>
+                    </div>
+                    <div class="mt-1 ms-1"><button class="btn add btn-success">Add</button></div>
             </div>
             <div class="filter">
               <div>
@@ -69,6 +75,7 @@
                         <th scope="col">#</th>
                         <th scope="col">Task Name</th>
                         <th scope="col">Task Owner</th>
+                        <th scope="col">Dead Line</th>
                         <th scope="col">Priority</th>
                         <th scope="col">Action</th>
                       </tr>
@@ -79,7 +86,6 @@
             </div>
         </div>
     </div>
-
 
 
     

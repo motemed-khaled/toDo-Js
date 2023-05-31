@@ -1,10 +1,12 @@
 // variable need to achieve the task
 let tableBody = document.querySelector(".todo .todo-table .table-body");
-let mainAlert = document.querySelector(".todo .input .alert");
+let mainAlert = document.querySelector(".todo .input .alert.priority");
+let dateAlert = document.querySelector(".todo .input .alert.date");
 let updateAlert = document.querySelector(".container .todo .update-overlay .update .alert");
 let addButton = document.querySelector(".todo .input .add");
 let nameInput = document.querySelector(".todo .input .task-name");
 let priorityInput = document.querySelector(".todo .input .taskPriority");
+let dateInput = document.querySelector(".todo .input .taskTimer");
 let updateName = document.querySelector(".container .todo .update-overlay .update .box input[name ='name']");
 let updatepriority = document.querySelector(".container .todo .update-overlay .update .box input[name ='prio']");
 let updateOwner = document.querySelector(".container .todo .update-overlay .update .box input[name ='owner']");
@@ -26,6 +28,7 @@ const displayAll = function (allTasks) {
             let taskId = document.createElement("td");
             let taskName = document.createElement("td");
             let taskOwner = document.createElement("td");
+            let taskTimer = document.createElement("td")
             let taskPriority = document.createElement("td");
             let taskAction = document.createElement("td");
             let editButton = document.createElement("button");
@@ -54,6 +57,7 @@ const displayAll = function (allTasks) {
             image.classList.add("img-fluid", "rounded-circle");
             editButton.classList.add("btn", "edit", "btn-primary");
             deleteButton.classList.add("btn", "delete", "ms-3", "btn-danger");
+            taskTimer.classList.add("timer");
     
             // append element to taskowner
             taskOwner.appendChild(image);
@@ -67,30 +71,23 @@ const displayAll = function (allTasks) {
             tableRow.appendChild(taskId);
             tableRow.appendChild(taskName);
             tableRow.appendChild(taskOwner);
+            tableRow.appendChild(taskTimer);
             tableRow.appendChild(taskPriority);
             tableRow.appendChild(taskAction);
     
             //append table row to table body
             tableBody.appendChild(tableRow);
         }
+        let allDateTd = document.querySelectorAll(".timer");
+        for (let i = 0; i < allTasks.length; i++) {
+            timer(allTasks[i].deadLine, allDateTd[i]);
+        }
     }
 } 
 
 const sorting= function (allTasks) {
-    let priorityTwo = [];
-    let priorityThree = [];
-    let priorityOne = [];
-    allTasks.forEach(task => {
-        if (task.priority === 2) {
-            priorityTwo.push(task);
-        }else if (task.priority === 3) {
-            priorityThree.push(task);
-        }else if (task.priority === 1) {
-            priorityOne.push(task);
-        }
-    })
-    allTasks = [...priorityOne, ...priorityTwo, ...priorityThree];
-    updateId(allTasks);
+    let sortTasks = allTasks.sort((a, b) => (a.priority > b.priority) ? 1 : ((b.priority > a.priority) ? -1 : 0));
+    updateId(sortTasks);
 }
 
 const updateId = function (allTasks) {
@@ -103,7 +100,6 @@ const updateId = function (allTasks) {
     localStorage.setItem("tasks", JSON.stringify(allTasks));
     displayAll(allTasks);
 }
-
 
 const removeTasks =function () {
     let allTr = document.querySelectorAll(".todo .todo-table .table-body tr");
@@ -123,6 +119,30 @@ const validate = function (inputValue , button , alert ) {
     }
 }
 
+const timer = function (endDate ,tr) {
+    let countDownDate = new Date(endDate);
+    let endDateTime = new Date(endDate).getTime();
+    let time;
+    let clear = setInterval(function () {
+        let now = new Date().getTime();
+        let deadLine = countDownDate - now;
+
+        let days = Math.floor(deadLine / (1000 * 60 * 60 * 24));
+        let hours = Math.floor((deadLine % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        let minutes = Math.floor((deadLine % (1000 * 60 * 60)) / (1000 * 60));
+        let seconds = Math.floor((deadLine % (1000 * 60)) / 1000);
+
+        time = `${days}d ${  hours}h  ${  minutes}m  ${  seconds}s`;
+        tr.innerHTML = time;
+        if (deadLine < 0) {
+            tr.innerHTML = "Expired";
+            tr.classList.add("text-white")
+            clearInterval(clear);
+        }
+        // return time;
+    }, 1000);
+}
+
 
 
 // show all old tasks from local storage
@@ -134,7 +154,8 @@ addButton.addEventListener("click", () => {
     let status = true;
     let taskName = nameInput.value;
     let taskPriority = priorityInput.value;
-    taskPriority = Math.floor(taskPriority);
+    let taskDate = dateInput.value;
+    taskPriority = Number(taskPriority);
 
     // valid input
     if (taskName === "") {
@@ -161,16 +182,18 @@ addButton.addEventListener("click", () => {
         }
         if (status) {
             let newValue = {
-                id : itreator + 1,
+                id: itreator + 1,
                 name: taskName,
                 priority: taskPriority,
-                owner : "Motemed Khaled"
+                owner: "Motemed Khaled",
+                deadLine:taskDate
             }
             oldTasks.push(newValue);
             localStorage.setItem("tasks", JSON.stringify(oldTasks));
             sorting(oldTasks)
             nameInput.value = "";
             priorityInput.value = "";
+            dateInput.value = "";
         }
     }
 });
@@ -288,6 +311,22 @@ updatepriority.addEventListener("keyup", () => {
     var priorityValue = updatepriority.value;
     validate(priorityValue , updateButton , updateAlert);
 });
+
+// valid timer input
+dateInput.addEventListener("change", () => {
+    let date = new Date(dateInput.value).getTime();
+    let now = new Date().getTime();
+    if (date < now) {
+        addButton.setAttribute("disabled", "disabled");
+        dateAlert.classList.remove("d-none");
+    } else {
+        dateAlert.classList.add("d-none");
+        addButton.removeAttribute("disabled");
+    }
+});
+
+
+
 
 
 
