@@ -139,8 +139,10 @@ const timer = function (endDate ,tr) {
 
 
 // show all old tasks from local storage
-let allTasks = JSON.parse(window.localStorage.getItem("tasks"));
-sorting(allTasks);
+if (localStorage.getItem("tasks")) {
+    let allTasks = JSON.parse(window.localStorage.getItem("tasks"));
+    sorting(allTasks);
+}
 
 // add new task
 addButton.addEventListener("click", () => {
