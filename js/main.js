@@ -36,7 +36,6 @@ const displayAll = function (allTasks) {
             let image = document.createElement("img");
             let span = document.createElement("span");
     
-            // add text to table data 
             let taskIdText = document.createTextNode(i + 1);
             let taskNameText = document.createTextNode(allTasks[i].name);
             let spanText = document.createTextNode(allTasks[i].owner);
@@ -44,7 +43,6 @@ const displayAll = function (allTasks) {
             let editButtonText = document.createTextNode("Edit");
             let deleteButtonText = document.createTextNode("Delete");
     
-            // append text to table data (td)
             taskId.appendChild(taskIdText);
             taskName.appendChild(taskNameText);
             span.appendChild(spanText);
@@ -52,22 +50,18 @@ const displayAll = function (allTasks) {
             editButton.appendChild(editButtonText);
             deleteButton.appendChild(deleteButtonText);
     
-            // add classes and attributes to my element
             image.setAttribute("src", "image/1.jpg");
             image.classList.add("img-fluid", "rounded-circle");
             editButton.classList.add("btn", "edit", "btn-primary");
             deleteButton.classList.add("btn", "delete", "ms-3", "btn-danger");
             taskTimer.classList.add("timer");
     
-            // append element to taskowner
             taskOwner.appendChild(image);
             taskOwner.appendChild(span)
     
-            // append button to task action
             taskAction.appendChild(editButton);
             taskAction.appendChild(deleteButton);
     
-            // append table data (td) to table row (tr)
             tableRow.appendChild(taskId);
             tableRow.appendChild(taskName);
             tableRow.appendChild(taskOwner);
@@ -75,7 +69,6 @@ const displayAll = function (allTasks) {
             tableRow.appendChild(taskPriority);
             tableRow.appendChild(taskAction);
     
-            //append table row to table body
             tableBody.appendChild(tableRow);
         }
         let allDateTd = document.querySelectorAll(".timer");
@@ -86,7 +79,7 @@ const displayAll = function (allTasks) {
 } 
 
 const sorting= function (allTasks) {
-    let sortTasks = allTasks.sort((a, b) => (a.priority > b.priority) ? 1 : ((b.priority > a.priority) ? -1 : 0));
+    let sortTasks = allTasks.sort((a, b) => a.priority - b.priority);
     updateId(sortTasks);
 }
 
@@ -163,7 +156,7 @@ addButton.addEventListener("click", () => {
             icon: 'error',
             title: 'Opps',
             text: ` Please Write Task Name !`
-        })
+        });
     } else {
         // check local storage
         if (window.localStorage.getItem("tasks") === null) {
@@ -190,7 +183,7 @@ addButton.addEventListener("click", () => {
             }
             oldTasks.push(newValue);
             localStorage.setItem("tasks", JSON.stringify(oldTasks));
-            sorting(oldTasks)
+            sorting(oldTasks);
             nameInput.value = "";
             priorityInput.value = "";
             dateInput.value = "";
@@ -224,8 +217,8 @@ document.addEventListener("click", e => {
 //  update action 
 document.addEventListener("click", e => {
     if (e.target.classList.contains("edit")) {
-        overLay.style.display = "flex"
-        let taskId = ++e.target.parentElement.parentElement.firstElementChild.innerText - 1;
+        overLay.style.display = "flex";
+        let taskId = +e.target.parentElement.parentElement.firstElementChild.innerText ;
         let allTasks = JSON.parse(window.localStorage.getItem("tasks"));
         allTasks.forEach(task => {
             if (task.id === taskId) {
@@ -240,9 +233,9 @@ document.addEventListener("click", e => {
         // edit button change data
         updateButton.addEventListener("click", () => {
             newPriority = updatepriority.value;
-            newPriority = Math.floor(newPriority);
+            newPriority = Number(newPriority);
             // valid input
-            if (updateName.value === "" || newPriority === 0 || updateOwner.value === "") {
+            if (updateName.value === "" || updateOwner.value === "") {
                 Swal.fire({
                     icon: 'error',
                     title: 'Opps',
@@ -256,8 +249,10 @@ document.addEventListener("click", e => {
                         task.owner = updateOwner.value;
                     }
                 });
+                overLay.style.display = "none";
+                updateId(allTasks);
                 localStorage.setItem("tasks", JSON.stringify(allTasks));
-                window.location.reload();
+
             }
             
         });
@@ -324,6 +319,8 @@ dateInput.addEventListener("change", () => {
         addButton.removeAttribute("disabled");
     }
 });
+
+
 
 
 
