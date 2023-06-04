@@ -129,13 +129,12 @@ const timer = function (endDate ,tr) {
         tr.innerHTML = time;
         if (deadLine < 0) {
             tr.innerHTML = "Expired";
-            tr.classList.add("text-white")
+            tr.classList.add("text-white");
             clearInterval(clear);
         }
         // return time;
     }, 1000);
 }
-
 
 
 // show all old tasks from local storage
@@ -310,6 +309,8 @@ updatepriority.addEventListener("keyup", () => {
 });
 
 // valid timer input
+
+
 dateInput.addEventListener("change", () => {
     let date = new Date(dateInput.value).getTime();
     let now = new Date().getTime();
@@ -322,6 +323,53 @@ dateInput.addEventListener("change", () => {
     }
 });
 
+
+// return unique value with map function
+let tasksArray = [
+    ["Nathalie Nader Nabil", "Task 01", "Option 2"],
+    ["Youssef Mohamed Ahmed Mohamed Youssef", "Task 01", "Option 1"],
+    ["Salma Nasreldin", "Task 01", "Option 1"],
+    ["Engy Mostafa", "Task 01", "Option 1"],
+    ["Engy Mostafa", "Task 01", "Option 1"],
+    ["Engy ahmed mostafa ", "Task 01", "Option 1"],
+    ["Abdelhay Nader Abdelhay Abozayed", "Task 01", "Option 1"],
+    ["Abdelrahman Shemies", "Task 01", "Option 1"],
+    ["Alaa Ahmed", "Task 01", "Option 2"],
+    ["Youssef Fathy Mahmoud", "Task 01", "Option 1"],
+    ["Mark Bassem", "Task 01", "Option 1"],
+    ["Anas Ahmed", "Task 01", "Option 1"],
+    ["Adham Hesham", "Task 01", "Option 1"],
+    ["Mohamed Ahmed Fahmi", "Task 01", "Option 1"],
+    ["rola wafi", "Task 01", "Option 1"],
+    ["Moataz Youssef", "Task 01", "Option 2"],
+    ["Ahmad Salama", "Task 01", "Option 1"],
+    ["Mohamed Ahmed Fahmi", "Task 01", "Option 1"],
+    ["Ahmad Salama Abdelaziz", "Task 01", "Option 2"],
+    ["Kareem Ramzi El-Tahlawi", "Task 01", "Option 1"],
+    ["Alaa Ahmed", "Task 01", "Option 2"],
+    ["rola wafi", "Task 01", "Option 2"],
+    ["Mohamed Fahmi", "Task 01", "Option 1"],
+    ["Mohamed Fahmi", "Task 01", "Option 2"],
+    ["Alaa Ahmed", "Task 01", "Option 2"],
+    ["Abdelrahman Shemies", "Task 01", "Option 1"],
+    ["Nathalie Nader", "Task 01", "Option 1"],
+    ["Mariam Ahmed", "Task 01", "Option 1"],
+];
+
+
+
+// return unique name from array
+const uniqueNameFromArray = (tasksArray) => {
+    let newTasks = tasksArray.map(task => {
+        return task[0];
+    });
+    let uniqueTask = new Set(newTasks);
+    uniqueTask.forEach(task => {
+        console.log(task)
+    });
+}
+
+uniqueNameFromArray(tasksArray);
 
 
 
